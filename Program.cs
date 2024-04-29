@@ -13,15 +13,14 @@ internal class Program
     {
         string[] mots = { "love", "stop", "eat" };
 
+        foreach (var mot in mots)
+        {
+            ThreadPool.QueueUserWorkItem(async state =>
+{
+    await MakeresquestWord(mot);
+});
+        }
 
-        ThreadPool.QueueUserWorkItem(async state =>
-        {
-            await MakeresquestWord("love");
-        });
-        ThreadPool.QueueUserWorkItem(async state =>
-        {
-            await MakeresquestWord("eat");
-        });
         ThreadPool.QueueUserWorkItem(async state =>
         {
             await MakeresquestRiot();
