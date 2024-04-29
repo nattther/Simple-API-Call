@@ -2,10 +2,23 @@
 {
     private async static Task Main(string[] args)
     {
-        await MakeresquestRiot();
+        ThreadPool.QueueUserWorkItem(async state =>
+        {
+            await MakeresquestWord();
+        });
+
+        ThreadPool.QueueUserWorkItem(async state =>
+        {
+            await MakeresquestRiot();
+        });
+
+        await Task.Delay(10000);
+
+        Console.WriteLine("Les deux requetes ont bien été faites.");
     }
     private static async Task MakeresquestWord()
     {
+        Console.WriteLine("Début de requete Word");
         HttpClient client = new HttpClient();
         client.BaseAddress = new Uri("https://wordsapiv1.p.rapidapi.com/");
 
@@ -18,10 +31,11 @@
 
 
         Console.WriteLine($"Status Code: {response.StatusCode} Content: {await response.Content.ReadAsStringAsync()}");
-        Console.ReadLine();
+        Console.WriteLine("fin de requete Word");
     }
-        private static async Task MakeresquestRiot()
+    private static async Task MakeresquestRiot()
     {
+        Console.WriteLine("Début de requete Riot ");
         HttpClient client = new HttpClient();
         client.BaseAddress = new Uri("https://euw1.api.riotgames.com/lol/platform/v3/");
 
@@ -32,7 +46,7 @@
 
 
         Console.WriteLine($"Status Code: {response.StatusCode} Content: {await response.Content.ReadAsStringAsync()}");
-        Console.ReadLine();
+        Console.WriteLine("fin de requete Riot");
     }
 }
 
