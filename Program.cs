@@ -11,35 +11,41 @@ internal class Program
 {
     private async static Task Main(string[] args)
     {
+        string[] mots = { "love", "stop", "eat" };
+
+
         ThreadPool.QueueUserWorkItem(async state =>
         {
-            await MakeresquestWord();
+            await MakeresquestWord("love");
         });
-
+        ThreadPool.QueueUserWorkItem(async state =>
+        {
+            await MakeresquestWord("eat");
+        });
         ThreadPool.QueueUserWorkItem(async state =>
         {
             await MakeresquestRiot();
         });
 
-        await Task.Delay(10000);
+        await Task.Delay(5000);
 
-        Console.WriteLine("Les deux requetes ont bien été faites.");
+        Console.WriteLine("Les requetes ont bien été faites.");
     }
-    private static async Task MakeresquestWord()
+    private static async Task MakeresquestWord(string mot)
     {
-        Console.WriteLine("Début de requête Word");
+        Console.WriteLine($"Début de requête {mot}");
         HttpClient client = new HttpClient();
         client.BaseAddress = new Uri("https://wordsapiv1.p.rapidapi.com/");
 
         client.DefaultRequestHeaders.Add("X-RapidAPI-Key", "3aa1e89fdbmsh3c8713a8d3b0981p128c54jsna2fc9089afad");
         client.DefaultRequestHeaders.Add("X-RapidAPI-Host", "wordsapiv1.p.rapidapi.com");
 
-        var response = await client.GetAsync("words/Stop");
+        var response = await client.GetAsync($"words/{mot}");
 
 
         string jsonContent = await response.Content.ReadAsStringAsync();
 
-        string filePath = "word.json";
+        string filePath = $"{mot}.json";
 
 
         await File.WriteAllTextAsync(filePath, jsonContent);
@@ -56,7 +62,7 @@ internal class Program
 
 
 
-        Console.WriteLine("Fin de requête Word");
+        Console.WriteLine($"Fin de requête {mot}");
     }
     private static async Task MakeresquestRiot()
     {
