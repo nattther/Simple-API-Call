@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Net.Http.Json;
+using System.Reflection.Metadata;
 
 
 internal class Program
@@ -46,6 +47,14 @@ internal class Program
         Console.WriteLine($"Le contenu a été enregistré avec succès dans {filePath}");
 
 
+        WordApiResponse resultat = await response.Content.ReadFromJsonAsync<WordApiResponse>();
+        Console.WriteLine("Résultat");
+        foreach (Result result in resultat.Results)
+        {
+            Console.WriteLine($"Définition : {result.Definition}");
+        }
+
+
 
         Console.WriteLine("Fin de requête Word");
     }
@@ -85,6 +94,50 @@ internal class Program
 
         [JsonPropertyName("maxNewPlayerLevel")]
         public int MaxNewPlayerLevel { get; set; }
+    }
+    public class WordApiResponse
+    {
+        [JsonPropertyName("word")]
+        public string Word { get; set; }
+
+        [JsonPropertyName("results")]
+        public List<Result> Results { get; set; }
+
+        [JsonPropertyName("syllables")]
+        public Syllables Syllables { get; set; }
+
+        [JsonPropertyName("pronunciation")]
+        public Pronunciation Pronunciation { get; set; }
+
+        [JsonPropertyName("frequency")]
+        public double Frequency { get; set; }
+    }
+
+    public class Result
+    {
+        [JsonPropertyName("definition")]
+        public string Definition { get; set; }
+
+        [JsonPropertyName("partOfSpeech")]
+        public string PartOfSpeech { get; set; }
+
+        [JsonPropertyName("synonyms")]
+        public List<string> Synonyms { get; set; }
+    }
+
+    public class Syllables
+    {
+        [JsonPropertyName("count")]
+        public int Count { get; set; }
+
+        [JsonPropertyName("list")]
+        public List<string> List { get; set; }
+    }
+
+    public class Pronunciation
+    {
+        [JsonPropertyName("all")]
+        public string All { get; set; }
     }
 }
 
